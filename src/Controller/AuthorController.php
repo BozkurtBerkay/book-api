@@ -66,7 +66,7 @@ class AuthorController extends AbstractApiController
     {
         $author = $repository->find($id);
         if (empty($author)) {
-            return $this->respond(["message" => "Author Not Found"], Response::HTTP_NOT_FOUND);
+            return $this->respond(["message" => "Author Not Found"]);
         }
 
         return $this->respond($author);
@@ -84,7 +84,7 @@ class AuthorController extends AbstractApiController
     {
         $author = $repository->find($id);
         if (empty($author)) {
-            return $this->respond(["message" => "Author Not Found"], Response::HTTP_NOT_FOUND);
+            return $this->respond(["message" => "Author Not Found"]);
         }
 
         $form = $this->buildForm(AuthorType::class, $author, [
@@ -103,7 +103,7 @@ class AuthorController extends AbstractApiController
         $entityManager->persist($author);
         $entityManager->flush();
 
-        return $this->respond($author);
+        return $this->respond($author, Response::HTTP_CREATED);
 
     }
 
@@ -120,12 +120,12 @@ class AuthorController extends AbstractApiController
 
         if(empty($author))
         {
-            return $this->respond(["message" => "Author Not Found"], Response::HTTP_NOT_FOUND);
+            return $this->respond(["message" => "Author Not Found"]);
         }
 
         $entityManager->remove($author);
         $entityManager->flush();
 
-        return $this->respond(["message" => "Author delete successfully", "author" => $author], Response::HTTP_ACCEPTED);
+        return $this->respond(["message" => "Author delete successfully", "author" => $author]);
     }
 }
