@@ -19,11 +19,18 @@ class BookController extends AbstractApiController
 {
     /**
      * @Route("/", name="list", methods={"GET|HEAD"})
+     * @param Request $request
      * @param BookRepository $repository
      * @return Response
      */
-    public function list(BookRepository $repository): Response
+    public function list(Request $request, BookRepository $repository): Response
     {
+        $fields = $request->query->all();
+        if (array_key_exists("name", $fields) || array_key_exists("author", $fields)) {
+            $searchBook = $repository->searchBookAndAuthor($fields["name"], $fields["author"]);
+            return $this->respond($searchBook);
+        }
+
         $books = $repository->findAll();
 
         return $this->respond($books);
@@ -118,8 +125,7 @@ class BookController extends AbstractApiController
     {
         $book = $repository->find($id);
 
-        if(empty($book))
-        {
+        if (empty($book)) {
             return $this->respond(["message" => "Book Not Found"]);
         }
 
