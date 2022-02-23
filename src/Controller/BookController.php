@@ -8,6 +8,7 @@ use App\Entity\Book;
 use App\Form\Type\BookType;
 use App\Repository\BookRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -41,6 +42,7 @@ class BookController extends AbstractApiController
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @return Response
+     * @Security("has_role('ROLE_ADMIN')")
      */
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -86,6 +88,7 @@ class BookController extends AbstractApiController
      * @param BookRepository $repository
      * @param EntityManagerInterface $entityManager
      * @return Response
+     * @Security("has_role('ROLE_ADMIN')")
      */
     public function edit(Request $request, int $id, BookRepository $repository, EntityManagerInterface $entityManager): Response
     {
@@ -120,6 +123,7 @@ class BookController extends AbstractApiController
      * @param BookRepository $repository
      * @param EntityManagerInterface $entityManager
      * @return Response
+     * @Security("has_role('ROLE_ADMIN')")
      */
     public function delete(int $id, BookRepository $repository, EntityManagerInterface $entityManager): Response
     {

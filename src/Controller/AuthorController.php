@@ -8,12 +8,14 @@ use App\Entity\Author;
 use App\Form\Type\AuthorType;
 use App\Repository\AuthorRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/api/author", name="author_")
+ * @Security("has_role('ROLE_ADMIN')")
  */
 class AuthorController extends AbstractApiController
 {
