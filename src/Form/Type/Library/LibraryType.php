@@ -11,6 +11,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 class LibraryType extends AbstractType
 {
@@ -18,9 +19,16 @@ class LibraryType extends AbstractType
     {
         $builder
             ->add('book', EntityType::class, [
-                'class' => Book::class
+                'class' => Book::class,
+                'constraints' => [
+                    new NotNull()
+                ]
             ])
-            ->add('readable', CheckboxType::class);
+            ->add('readable', CheckboxType::class, [
+                'constraints' => [
+                    new NotNull()
+                ]
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

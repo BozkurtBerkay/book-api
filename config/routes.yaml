@@ -9,3 +9,4 @@ fos_oauth_server_authorize:
 
 fos_user_register:
   resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
+

@@ -8,19 +8,41 @@ use App\Entity\Author;
 use App\Form\Type\AuthorType;
 use App\Repository\AuthorRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Nelmio\ApiDocBundle\Annotation\Security as SC;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use OpenApi\Annotations as OA;
 
 /**
  * @Route("/api/author", name="author_")
  * @Security("has_role('ROLE_ADMIN')")
+ * @SC(name="Bearer")
+ * @OA\Response (
+ *     response="401",
+ *     description="Unauthorized"
+ * )
+ * @OA\Response (
+ *     response="400",
+ *     description="Bad Request"
+ * )
  */
 class AuthorController extends AbstractApiController
 {
     /**
-     * @Route("/", name="list", methods={"GET|HEAD"})
+     * @Route("/", name="list", methods={"GET"})
+     * @OA\Response(
+     *     response="200",
+     *     description="Successfull",
+     *     @OA\JsonContent(
+     *         type="array",
+     *         @OA\Items(
+     *         ref=@Model(type="Author:class")
+     *   )
+     *  )
+     * )
      * @param AuthorRepository $repository
      * @return Response
      */
@@ -33,6 +55,34 @@ class AuthorController extends AbstractApiController
 
     /**
      * @Route("/", name="create", methods={"POST"})
+     * @OA\RequestBody (
+     *     description="Input data format",
+     *     @OA\MediaType(
+     *     mediaType="application/x-www-form-urlencoded",
+     *         @OA\Schema(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="name",
+     *                 description="Name of the author",
+     *                 type="string",
+     *             ),
+     *             @OA\Property(
+     *                 property="surname",
+     *                 description="Surname of the author",
+     *                 type="string",
+     *             ),
+     *             @OA\Property(
+     *                 property="country",
+     *                 description="Country of the author",
+     *                 type="string",
+     *             )
+     *        )
+     *     )
+     * )
+     * @OA\Response (
+     *     response="201",
+     *     description="Success"
+     * )
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @return Response
@@ -60,6 +110,11 @@ class AuthorController extends AbstractApiController
 
     /**
      * @Route("/{id}", name="read", methods={"GET"})
+     * @OA\Parameter (
+     *     name="id",
+     *     in="path",
+     *     description="ID of Author to return"
+     * )
      * @param int $id
      * @param AuthorRepository $repository
      * @return Response
@@ -76,6 +131,39 @@ class AuthorController extends AbstractApiController
 
     /**
      * @Route("/{id}", name="update", methods={"PUT"})
+     * @OA\Parameter (
+     *     name="id",
+     *     in="path",
+     *     description="ID of Author to update"
+     * )
+     * @OA\RequestBody (
+     *     description="Input data format",
+     *     @OA\MediaType(
+     *     mediaType="application/x-www-form-urlencoded",
+     *         @OA\Schema(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="name",
+     *                 description="Updated name of the author",
+     *                 type="string",
+     *             ),
+     *             @OA\Property(
+     *                 property="surname",
+     *                 description="Updated surname of the author",
+     *                 type="string",
+     *             ),
+     *             @OA\Property(
+     *                 property="country",
+     *                 description="Updated country of the author",
+     *                 type="string",
+     *             )
+     *        )
+     *     )
+     * )
+     * @OA\Response (
+     *     response="201",
+     *     description="Success"
+     * )
      * @param Request $request
      * @param int $id
      * @param AuthorRepository $repository
@@ -120,8 +208,7 @@ class AuthorController extends AbstractApiController
     {
         $author = $repository->find($id);
 
-        if(empty($author))
-        {
+        if (empty($author)) {
             return $this->respond(["message" => "Author Not Found"]);
         }
 

@@ -11,13 +11,18 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 class LibraryUpdateType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('readable', CheckboxType::class);
+            ->add('readable', CheckboxType::class, [
+                'constraints' => [
+                    new NotNull()
+                ]
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

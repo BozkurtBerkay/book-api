@@ -8,18 +8,52 @@ use App\Entity\Book;
 use App\Form\Type\BookType;
 use App\Repository\BookRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Nelmio\ApiDocBundle\Annotation\Security as SC;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use OpenApi\Annotations as OA;
 
 /**
  * @Route("/api/book", name="book_")
+ * @OA\Response (
+ *     response="401",
+ *     description="Unauthorized"
+ * )
+ * @OA\Response (
+ *     response="400",
+ *     description="Bad Request"
+ * )
  */
 class BookController extends AbstractApiController
 {
     /**
-     * @Route("/", name="list", methods={"GET|HEAD"})
+     * @Route("/", name="list", methods={"GET"})
+     * @OA\Parameter (
+     *     name="name",
+     *     in="query",
+     *     description="Search book name",
+     *     required=true
+     * )
+     * @OA\Parameter (
+     *     name="author",
+     *     in="query",
+     *     description="Search author name",
+     *     required=true
+     * )
+     *
+     * @OA\Response(
+     *     response="200",
+     *     description="Successfull",
+     *     @OA\JsonContent(
+     *         type="array",
+     *         @OA\Items(
+     *         ref=@Model(type="Book:class")
+     *   )
+     *  )
+     * )
      * @param Request $request
      * @param BookRepository $repository
      * @return Response
@@ -39,9 +73,33 @@ class BookController extends AbstractApiController
 
     /**
      * @Route("/", name="create", methods={"POST"})
+     * @OA\RequestBody (
+     *     description="Input data format",
+     *     @OA\MediaType(
+     *     mediaType="application/x-www-form-urlencoded",
+     *         @OA\Schema(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="name",
+     *                 description="Name of the book",
+     *                 type="string",
+     *             ),
+     *             @OA\Property(
+     *                 property="author",
+     *                 description="ID of the author",
+     *                 type="integer",
+     *             )
+     *        )
+     *     )
+     * )
+     * @OA\Response (
+     *     response="201",
+     *     description="Success"
+     * )
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @return Response
+     * @SC(name="Bearer")
      * @Security("has_role('ROLE_ADMIN')")
      */
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -83,11 +141,35 @@ class BookController extends AbstractApiController
 
     /**
      * @Route("/{id}", name="update", methods={"PUT"})
+     * * @OA\RequestBody (
+     *     description="Input data format",
+     *     @OA\MediaType(
+     *     mediaType="application/x-www-form-urlencoded",
+     *         @OA\Schema(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="name",
+     *                 description="Update name of the book",
+     *                 type="string",
+     *             ),
+     *             @OA\Property(
+     *                 property="author",
+     *                 description="Update ID of the author",
+     *                 type="integer",
+     *             )
+     *        )
+     *     )
+     * )
+     * @OA\Response (
+     *     response="201",
+     *     description="Success"
+     * )
      * @param Request $request
      * @param int $id
      * @param BookRepository $repository
      * @param EntityManagerInterface $entityManager
      * @return Response
+     * @SC(name="Bearer")
      * @Security("has_role('ROLE_ADMIN')")
      */
     public function edit(Request $request, int $id, BookRepository $repository, EntityManagerInterface $entityManager): Response
@@ -123,6 +205,7 @@ class BookController extends AbstractApiController
      * @param BookRepository $repository
      * @param EntityManagerInterface $entityManager
      * @return Response
+     * @SC(name="Bearer")
      * @Security("has_role('ROLE_ADMIN')")
      */
     public function delete(int $id, BookRepository $repository, EntityManagerInterface $entityManager): Response
