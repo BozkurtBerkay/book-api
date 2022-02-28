@@ -54,7 +54,7 @@ class UserController extends AbstractApiController
     }
 
     /**
-     * @Route("/profile", name="user_update", methods={"PUT"})
+     * @Route("/api/users", name="user_update", methods={"PUT"})
      * @param Request $request
      * @return Response
      */
