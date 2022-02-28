@@ -35,13 +35,11 @@ class BookController extends AbstractApiController
      *     name="name",
      *     in="query",
      *     description="Search book name",
-     *     required=true
      * )
      * @OA\Parameter (
      *     name="author",
      *     in="query",
      *     description="Search author name",
-     *     required=true
      * )
      *
      * @OA\Response(
